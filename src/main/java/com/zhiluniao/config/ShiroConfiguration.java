@@ -159,6 +159,7 @@ public class ShiroConfiguration {
         advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
     }
+    
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(){
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
@@ -170,6 +171,7 @@ public class ShiroConfiguration {
      * ShiroDialect，为了在thymeleaf里使用shiro的标签的bean
      * @return
      */
+    
 /*    @Bean
     public ShiroDialect shiroDialect(){
         return new ShiroDialect();

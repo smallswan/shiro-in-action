@@ -28,6 +28,17 @@
     from zln_permission
     where id = #{id,jdbcType=BIGINT}
   </select>
+  
+  <select id="selectByRoles" resultMap="BaseResultMap"> 
+     SELECT p.*
+     FROM zln_role r  LEFT JOIN zln_role_permission rp ON r.id = rp.role_id   LEFT JOIN zln_permission p ON rp.permission_id = p.id
+     WHERE r.role IN 
+      <foreach collection="array" item="role"  open="(" separator="," close=")">  
+        #{role}  
+     </foreach>
+     AND p.id IS NOT NULL  
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--
       WARNING - @mbg.generated

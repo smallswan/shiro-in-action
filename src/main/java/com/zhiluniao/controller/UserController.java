@@ -10,6 +10,8 @@ import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -136,6 +138,41 @@ public class UserController {
         }
         return rsp;
 
+    }
+    
+    //TODO 用户profile
+    @RequiresRoles("SUPER_ADMIN")
+    @ApiOperation(value = "用户资料", httpMethod = "POST", notes = "")
+    @RequestMapping(value = "profile", method = RequestMethod.POST)
+    public @ResponseBody RspBody<String> profile() {
+        RspBody<String> rsp = new RspBody<String>();
+        try{
+            rsp.setStatus("0000");
+            rsp.setStatusText("成功");
+            rsp.setBody("你拥有超级管理员(SUPER_ADMIN)角色");
+            
+        }catch(Exception e){
+            log.error("",e);
+            rsp.setStatus("E0000");
+            rsp.setStatusText("系统错误");
+        }
+        
+
+        return rsp;
+    }
+    
+    @RequiresPermissions({"/view/permissions"})
+    @ApiOperation(value = "用户注销", httpMethod = "POST", notes = "")
+    @RequestMapping(value = "permissions", method = RequestMethod.POST)
+    public @ResponseBody RspBody<String> permissions() {
+        RspBody<String> rsp = new RspBody<String>();
+        rsp.setStatus("0000");
+        rsp.setStatusText("成功");
+        
+        
+        rsp.setBody("你拥有查看权限(/view/permissions)的权限");
+        
+        return rsp;
     }
     
     /**

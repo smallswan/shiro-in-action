@@ -1,12 +1,19 @@
 package com.zhiluniao.service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zhiluniao.model.po.Permission;
+import com.zhiluniao.model.po.Role;
 import com.zhiluniao.model.po.User;
+import com.zhiluniao.model.po.UserDetail;
+import com.zhiluniao.model.po.dao.PermissionMapper;
 import com.zhiluniao.model.po.dao.UserMapper;
+import com.zhiluniao.model.po.dao.UserRoleMapper;
 
 /**
  * 
@@ -20,6 +27,12 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
     
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+    
+    @Autowired
+    private PermissionMapper  permissionMapper;
+    
     public User getUserById(Long id){
         return userMapper.selectByPrimaryKey(id);
     }
@@ -29,12 +42,38 @@ public class UserService {
     }
 
     public Set<String> findRoles(String username) {
-        // TODO Auto-generated method stub
+        UserDetail detail = userRoleMapper.selectByUsername(username);
+        if(detail != null){
+            List<Role> roles = detail.getRoles();
+           if(roles != null && !roles.isEmpty()){
+               Set<String> roleSet = new HashSet<>();
+               for(Role role : roles){
+                   roleSet.add(role.getRole());
+               }
+               
+               return roleSet;
+           }
+        }
         return null;
     }
 
     public Set<String> findPermissions(String username) {
-        // TODO Auto-generated method stub
+        Set<String>  roleSet = findRoles(username);
+        if(roleSet != null && !roleSet.isEmpty()){
+            String[] roles = new String[]{};
+            roles = roleSet.toArray(roles);
+            
+            List<Permission>  permissions = permissionMapper.selectByRoles(roles);
+            if(permissions != null && !permissions.isEmpty()){
+                Set<String>  permissionSet = new HashSet<>();
+                for(Permission permission : permissions){
+                    permissionSet.add(permission.getPermission());
+                }
+                
+                return permissionSet;
+            }
+        }
+        
         return null;
     }
 

@@ -14,11 +14,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  *         2018年1月20日  上午11:43:20
  */
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {     
-        org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class})
-@ComponentScan("com.zhiluniao")
-@EnableTransactionManagement
+@EnableAutoConfiguration
 @MapperScan("com.zhiluniao.model.po")
+@ComponentScan//(basePackages = {"com.zhiluniao.controller"})
+@EnableTransactionManagement
 public class StartApplication {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(StartApplication.class, args);
