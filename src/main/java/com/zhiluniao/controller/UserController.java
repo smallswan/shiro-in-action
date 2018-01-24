@@ -16,6 +16,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -25,10 +26,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import com.zhiluniao.model.po.User;
 import com.zhiluniao.model.vo.LoginReq;
+import com.zhiluniao.model.vo.RegisterReq;
 import com.zhiluniao.model.vo.RspBody;
 import com.zhiluniao.model.vo.SimpleFieldError;
+import com.zhiluniao.service.UserService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -43,6 +48,53 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 public class UserController {
     private Logger log = LoggerFactory.getLogger(UserController.class);
+    
+    @Autowired
+    private UserService userService;
+    
+    //TODO 用户注册
+    @ApiOperation(value = "用户注册", notes = "用户注册")
+    @RequestMapping(value = "register", method = RequestMethod.POST)
+    public @ResponseBody RspBody<User> register(HttpServletRequest request,
+            @Validated @RequestBody RegisterReq req, BindingResult bindingResult) {
+        User newUser = null;
+        RspBody<User> rsp = new RspBody<User>();
+        try {
+            if (bindingResult.hasErrors()) {
+                assemblyErrors(rsp,bindingResult);
+                
+                return rsp;
+            }
+            String captcha = req.getCaptcha();
+            String sessionId = request.getSession().getId();
+            log.info("sessionId : {},captcha : {},smsCaptcha : {}",sessionId,captcha,req.getSmsCaptcha());
+//            Boolean isResponseCorrect = imageCaptchaService.validateResponseForID(sessionId, captcha);
+//            if(!isResponseCorrect){
+//                rsp.setStatus("0002");
+//                rsp.setError(new BusinessError("E0003", "图形验证码不正确"));
+//                return rsp;
+//            }
+            newUser = userService.register(req);
+
+            if (newUser == null) {
+                log.error("用户注册失败");
+                rsp.setStatus("E0003");
+                rsp.addError(new SimpleFieldError("userName","帐号["+ req.getUsername() + "]已经注册，请使用其它号码进行注册"));
+            } else {
+                rsp.setStatus("0000");
+                rsp.setStatusText("注册成功");
+                rsp.setBody(newUser);
+            }
+
+        } catch (Exception e) {
+            rsp.setStatus("E0000");
+            rsp.addError(new SimpleFieldError("E0000", "系统错误"));
+            log.error("",e);
+        }
+
+        return rsp;
+    }
+    
     
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public @ResponseBody RspBody<String> login(HttpServletRequest request, @Validated @RequestBody LoginReq loginInfo,

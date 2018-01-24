@@ -15,7 +15,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.SimpleByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.zhiluniao.model.constants.Constants;
 import com.zhiluniao.model.constants.UserStatus;
 import com.zhiluniao.model.po.User;
@@ -32,6 +31,7 @@ import com.zhiluniao.service.UserService;
  */
 public class UserRealm extends AuthorizingRealm {
     private Logger log = LoggerFactory.getLogger(UserRealm.class);
+    
     @Resource
     private UserService userService;
 
@@ -58,6 +58,8 @@ public class UserRealm extends AuthorizingRealm {
             user = userService.getUserByMobile(username);
         } else if (username.matches(Constants.EMAIL_PATTERN)) {
             user = userService.getUserByEmail(username);
+        }else{
+            user = userService.getUserByUsername(username);
         }
 
         if (user == null) {
