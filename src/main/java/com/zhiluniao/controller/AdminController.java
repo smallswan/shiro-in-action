@@ -13,7 +13,7 @@ import io.swagger.annotations.Api;
  */
 @Api(value = "/admin")
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     

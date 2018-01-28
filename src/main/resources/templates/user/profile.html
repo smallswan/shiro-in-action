@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" >
+<head>
+<meta charset="UTF-8">
+<title>User Profile</title>
+</head>
+<body>
+<p th:if="${certificated}" >你已实名认证</p>
+<p th:if="${certificated} == false" >你尚未实名认证</p>
+<p th:if="${hasSuperAdminRole}" >你已拥有超级管理员角色</p>
+</body>
+</html>

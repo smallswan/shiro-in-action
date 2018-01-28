@@ -206,7 +206,7 @@ public class ShiroConfiguration {
         SimpleMappingExceptionResolver  Resolver = new SimpleMappingExceptionResolver();
         
         Properties mappings = new Properties();
-        mappings.put("org.apache.shiro.authz.UnauthenticatedException", "/error/404");
+        mappings.put("org.apache.shiro.authz.UnauthenticatedException", "/error/403");
         mappings.put("java.lang.Throwable", "/error/500");
 //        mappings.put("", "");
 //        mappings.put("", "");

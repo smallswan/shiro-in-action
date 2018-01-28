@@ -1,5 +1,6 @@
 package com.zhiluniao.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,12 +12,14 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -45,14 +48,13 @@ import io.swagger.annotations.ApiOperation;
  */
 @Api(value = "/user")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
     private Logger log = LoggerFactory.getLogger(UserController.class);
     
     @Autowired
     private UserService userService;
     
-    //TODO 用户注册
     @ApiOperation(value = "用户注册", notes = "用户注册")
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public @ResponseBody RspBody<User> register(HttpServletRequest request,
@@ -192,17 +194,24 @@ public class UserController {
 
     }
     
-    //TODO 用户profile
-    @RequiresRoles("SUPER_ADMIN")
+    @RequiresUser
     @ApiOperation(value = "用户资料", httpMethod = "POST", notes = "")
     @RequestMapping(value = "profile", method = RequestMethod.POST)
-    public @ResponseBody RspBody<String> profile() {
+    public @ResponseBody RspBody<String> profile(Model model) {
         RspBody<String> rsp = new RspBody<String>();
         try{
+            Subject subject = SecurityUtils.getSubject();
+            String username = (String) subject.getPrincipal();
+            PrincipalCollection pc = subject.getPrincipals();
+            Iterator<String> ps = pc.iterator();
+            while(ps.hasNext()){
+                String p = ps.next();
+                log.info("Principal {}",p);
+            }
+           
             rsp.setStatus("0000");
             rsp.setStatusText("成功");
             rsp.setBody("你拥有超级管理员(SUPER_ADMIN)角色");
-            
         }catch(Exception e){
             log.error("",e);
             rsp.setStatus("E0000");
