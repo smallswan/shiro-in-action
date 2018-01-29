@@ -211,7 +211,6 @@ public class UserController {
            
             rsp.setStatus("0000");
             rsp.setStatusText("成功");
-            rsp.setBody("你拥有超级管理员(SUPER_ADMIN)角色");
         }catch(Exception e){
             log.error("",e);
             rsp.setStatus("E0000");

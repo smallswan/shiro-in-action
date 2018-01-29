@@ -7,10 +7,13 @@ import java.util.Set;
 
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha512Hash;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zhiluniao.model.constants.Constants;
 import com.zhiluniao.model.constants.UserStatus;
@@ -96,7 +99,7 @@ public class UserService {
         return null;
     }
 
-
+    @Transactional
     public User register(RegisterReq req) {
         User user = null;
         String username = req.getUsername();
@@ -107,10 +110,10 @@ public class UserService {
             mobile = username;
         } 
         
-        if(username.matches(Constants.EMAIL_PATTERN)){
+        if(user == null && username.matches(Constants.EMAIL_PATTERN)){
             user = userMapper.selectByEmail(username);
             email = username;
-        }else{
+        }else if(user == null){
             user = userMapper.selectByUsername(username);
         }
         
@@ -122,7 +125,12 @@ public class UserService {
         SecureRandomNumberGenerator generator = new SecureRandomNumberGenerator();
         //盐
         String salt = generator.nextBytes().toHex();
-        String hex = new Sha512Hash(req.getPassword(),salt).toHex();
+        String hex = new SimpleHash(  
+                Constants.SHIRO_HASH_ALGORITHM_NAME,     //加密算法  
+                req.getPassword(),                       //密码  
+                ByteSource.Util.bytes(salt.getBytes()),  //salt盐    
+                Constants.SHIRO_HASH_ITERATIONS          //迭代次数  
+                ).toHex();  
 
         User user2 = new User();
         // 系统自动生成username

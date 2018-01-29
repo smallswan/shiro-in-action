@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
+import com.zhiluniao.model.constants.Constants;
 import com.zhiluniao.shiro.credential.RetryLimitHashedCredentialsMatcher;
 import com.zhiluniao.shiro.realm.UserRealm;
 
@@ -57,8 +58,8 @@ public class ShiroConfiguration {
 		RetryLimitHashedCredentialsMatcher matcher = null;
 		try {
 			matcher = new RetryLimitHashedCredentialsMatcher(cacheManager());
-			matcher.setHashAlgorithmName("SHA-512");
-			matcher.setHashIterations(1);
+			matcher.setHashAlgorithmName(Constants.SHIRO_HASH_ALGORITHM_NAME);
+			matcher.setHashIterations(Constants.SHIRO_HASH_ITERATIONS);
 			matcher.setStoredCredentialsHexEncoded(true);
 		} catch (FileNotFoundException e) {
 			log.error("",e);
