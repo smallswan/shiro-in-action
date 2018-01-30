@@ -235,6 +235,10 @@ public class UserController {
         return rsp;
     }
     
+    //TODO 重置登录密码
+    
+    //TODO 修改登录密码
+    
     /**
      * 装配错误信息
      * 

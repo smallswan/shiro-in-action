@@ -10,4 +10,4 @@
 
 ##技术栈
 
-shiro、spring boot、druid、mybatis、MySQL
+shiro、spring boot、druid、mybatis、MySQL、ehcache

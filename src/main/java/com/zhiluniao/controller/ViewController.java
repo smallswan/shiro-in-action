@@ -23,7 +23,15 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/view")
 public class ViewController {
     private Logger log = LoggerFactory.getLogger(ViewController.class);
+    @RequestMapping(value = "/signin", method = RequestMethod.GET)
+    @ApiOperation(value = "登录页面", notes = "登录页面")
+    public String signin(Model model) {
+        log.info("跳转到登录页面");
 
+        return "signin";
+    }
+    
+    
     @RequestMapping(value = "/user/profile", method = RequestMethod.GET)
     @ApiOperation(value = "个人信息页面", notes = "个人信息页面")
     public String profile(Model model) {

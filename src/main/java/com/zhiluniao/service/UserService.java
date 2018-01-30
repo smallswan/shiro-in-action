@@ -151,5 +151,9 @@ public class UserService {
         return userMapper.selectByUsername(user2.getUsername());
     }
     
-    
+    //TODO 修改登录密码
+    public int changePassword(Long id,String newPassword){
+        
+        return 0;
+    }
 }
